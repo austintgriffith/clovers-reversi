@@ -32,7 +32,35 @@ while(true){
     var persec = count/length
     if(!avg) avg = Math.round(persec)
     else avg = Math.round(1000 * (avg * 15/16 + (persec) * 1/16))/1000
-    console.log(count,length,avg)
+    console.log(avg+"/s (view clovers/stats.json for more info)")
+
+    var stats
+    try{
+      stats= fs.readFileSync("clovers/stats.json")
+    }catch(e){
+
+    }
+    if(stats) {
+      try{
+        stats = JSON.parse(stats)
+      }catch(e){
+
+      }
+    }else{
+      stats = {started: Date.now()}
+    }
+    if(stats && stats.started){
+      if(!stats.workers){
+        stats.workers = {}
+      }
+      stats.workers[process.pid] = Date.now()
+      if(!stats.perSec){
+        stats.perSec = avg
+      }else{
+        stats.perSec = Math.round(1000 * (stats.perSec * 15/16 + (persec) * 1/16))/1000
+      }
+      fs.writeFileSync("clovers/stats.json",JSON.stringify(stats,null,2))
+    }
   }
 
   console.log("FOUND",reversi.movesString)
@@ -52,32 +80,6 @@ while(true){
   var details = reversi.RotSym+","+reversi.Y0Sym+","+reversi.X0Sym+","+reversi.XYSym+","+reversi.XnYSym+"\n"
   fs.writeFileSync("clovers/"+reversi.movesString,reversi.movesString+"\n\n"+fullThing+"\n"+details)
 
-  var stats
-  try{
-    stats= fs.readFileSync("clovers/stats.json")
-  }catch(e){
 
-  }
-  if(stats) {
-    try{
-      stats = JSON.parse(stats)
-    }catch(e){
-
-    }
-  }else{
-    stats = {started: Date.now()}
-  }
-  if(stats && stats.started){
-    if(!stats.workers){
-      stats.workers = {}
-    }
-    stats.workers[process.pid] = Date.now()
-    if(!stats.perSec){
-      stats.perSec = avg
-    }else{
-      stats.perSec = Math.round(1000 * (stats.perSec * 15/16 + (persec) * 1/16))/1000
-    }
-    fs.writeFileSync("clovers/stats.json",JSON.stringify(stats,null,2))
-  }
 
 }
