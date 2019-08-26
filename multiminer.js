@@ -41,8 +41,8 @@ while(true){
   var cleanLine = ""
   var fullThing = ""
   console.log(reversi.movesString)
-  for (let i = 0; i < reversi.BOARDDIM; i++) {
-    for (let j = 0; j < reversi.BOARDDIM; j++) {
+  for (var i = 0; i < reversi.BOARDDIM; i++) {
+    for (var j = 0; j < reversi.BOARDDIM; j++) {
       cleanLine+=reversi.visualBoard[i][j]
     }
     console.log(cleanLine)
